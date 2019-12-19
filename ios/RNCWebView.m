@@ -735,6 +735,11 @@ static NSDictionary* customCertificatesForHost;
         return;
     }
     if ([[challenge protectionSpace] serverTrust] != nil && customCertificatesForHost != nil && host != nil) {
+
+        NSURLCredential * credential = [[NSURLCredential alloc] initWithTrust:[challenge protectionSpace].serverTrust];
+        completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        return;
+        
         SecCertificateRef localCertificate = (__bridge SecCertificateRef)([customCertificatesForHost objectForKey:host]);
         if (localCertificate != nil) {
             NSData *localCertificateData = (NSData*) CFBridgingRelease(SecCertificateCopyData(localCertificate));
